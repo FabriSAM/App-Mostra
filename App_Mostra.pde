@@ -22,6 +22,7 @@ int firstBtnH = 50;
 int resX = 416;
 int resY = 900;
 
+float laMostraY = 0;
 //Stringhe
 String artistSelected = "";
 String interviewSelected = "";
@@ -53,6 +54,7 @@ PImage img_barcode;
 PImage img_plus;
 PImage img_minus;
 PImage img_home;
+PImage img_mostra;
 
 //Bottoni
 Button btn_skip;
@@ -107,6 +109,7 @@ void setup()
   img_barcode = loadImage("Assets/barcode.png");
   img_plus = loadImage("Assets/plus.png");
   img_minus = loadImage("Assets/minus.png");
+  img_mostra = loadImage("Assets/mostra.png");
 
   //Bottoni
   btn_skip = new Button(new PVector(300, 650), new PVector(30, 30), "", button_color);
@@ -131,60 +134,66 @@ void movieEvent(Movie m) {
 }
 
 void mouseWheel(MouseEvent event) {
-  float e = event.getCount();
+
   
-  println(arrayCount);
-  //Se la rotellina aumenta il valore (Scorre Verso Il Basso)
-  if (e > 0) {
-    //Lista di Controlli per verificare se esce all'esterno dell'indice dell'arrai artistList
-    if (indexMem[0] + 1 >= arrayCount)
-    {
-      indexMem[0] = 0;
-    } else
-    {
-      indexMem[0] += 1;
-    }
-
-    if (indexMem[1] + 1 >= arrayCount)
-    {
-      indexMem[1] = 0;
-    } else
-    {
-      indexMem[1] += 1;
-    }
-
-    if (indexMem[2] + 1 >= arrayCount)
-    {
-      indexMem[2] = 0;
-    } else
-    {
-      indexMem[2] += 1;
-    }
+  float e = event.getCount();
+  if (laMostraPageActive)
+  {
+    laMostraY = constrain(laMostraY + e*10, resY - img_mostra.height, 0);
   }
-  // Se la rotellina diminuisce il valore (Scorre Verso L'Alto)
-  else {
-    //Lista di Controlli per verificare se esce all'esterno dell'indice dell'arrai artistList
-    if (indexMem[0] - 1 < 0)
-    {
-      indexMem[0] = arrayCount-1;
-    } else
-    {
-      indexMem[0] -= 1;
-    }
-    if (indexMem[1] - 1 < 0)
-    {
-      indexMem[1] = arrayCount-1;
-    } else
-    {
-      indexMem[1] -= 1;
-    }
+  else{
+    //Se la rotellina aumenta il valore (Scorre Verso Il Basso)
+    if (e > 0) {
+      //Lista di Controlli per verificare se esce all'esterno dell'indice dell'arrai artistList
+      if (indexMem[0] + 1 >= arrayCount)
+      {
+        indexMem[0] = 0;
+      } else
+      {
+        indexMem[0] += 1;
+      }
 
-    if (indexMem[2] - 1 < 0)
-    {
-      indexMem[2] = arrayCount-1;
-    } else
-    {
-      indexMem[2] -= 1;
+      if (indexMem[1] + 1 >= arrayCount)
+      {
+        indexMem[1] = 0;
+      } else
+      {
+        indexMem[1] += 1;
+      }
+
+      if (indexMem[2] + 1 >= arrayCount)
+      {
+        indexMem[2] = 0;
+      } else
+      {
+        indexMem[2] += 1;
+      }
+    }
+    // Se la rotellina diminuisce il valore (Scorre Verso L'Alto)
+    else {
+      //Lista di Controlli per verificare se esce all'esterno dell'indice dell'arrai artistList
+      if (indexMem[0] - 1 < 0)
+      {
+        indexMem[0] = arrayCount-1;
+      } else
+      {
+        indexMem[0] -= 1;
+      }
+      if (indexMem[1] - 1 < 0)
+      {
+        indexMem[1] = arrayCount-1;
+      } else
+      {
+        indexMem[1] -= 1;
+      }
+
+      if (indexMem[2] - 1 < 0)
+      {
+        indexMem[2] = arrayCount-1;
+      } else
+      {
+        indexMem[2] -= 1;
+      }
     }
   }
 }
@@ -256,11 +265,6 @@ void TemporizationPage()
 //Metodo Sidebar
 void Sidebar()
 {
-  if (!landingPageActive || !intervisteInfoPageActive)
-  {
-    background(bg_color);
-  }
-
   fill(sidebar_color);
   noStroke();
 
@@ -269,7 +273,7 @@ void Sidebar()
   fill(0);
   textAlign(CENTER, CENTER);
   textSize(17);
-  text(hour() + " : " + minute(), 30, 44/2);
+  text(nf(hour(), 2) + " : " + nf(minute() , 2), 30, 44/2);
 
   // Incone stato telefono
   image(img_wifi, width-60, 44/2-5, 12, 10);
@@ -352,15 +356,9 @@ void FirstPage()
 //Metodo per visualizzare la pagina "LA MOSTRA"
 void LaMostraPage()
 {
-  DrawLowRectangle();
+  image(img_mostra, 0, 0 + laMostraY);
 
-  String title = "LA MOSTRA";
-  String description = SetupString("Testi/la_mostra.txt");
-
-  DrawTextLayer(width/2, 80, title, 40, color(0, 0, 0, 255), 150, CENTER, CENTER);
   btn_backHome = DrawBackHomeButton(40, 73);
-  DrawTextLayer(20, 340, description, 20, color(0, 0, 0, 255), 0, LEFT, TOP);
-
   if (btn_backHome.OnClicked())
   {
     laMostraPageActive = false;
@@ -594,7 +592,10 @@ void BigliettoPage()
 //EVENTO DRAW
 void draw()
 {
-  Sidebar();
+  if (!landingPageActive || !intervisteInfoPageActive)
+  {
+    background(bg_color);
+  }
 
   if (landingPageActive)
   {
@@ -623,4 +624,6 @@ void draw()
   {
     BigliettoPage();
   }
+  
+  Sidebar();
 }
