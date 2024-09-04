@@ -23,6 +23,7 @@ int resX = 416;
 int resY = 900;
 
 float laMostraY = 0;
+float pieroY = 0;
 //Stringhe
 String artistSelected = "";
 String interviewSelected = "";
@@ -44,6 +45,7 @@ boolean intervisteActive = false;
 boolean intervisteInfoPageActive = false;
 boolean firstTime = true;
 boolean bigliettoPageActive = false;
+boolean pieroPageActive = false;
 
 // Immagini
 PImage img_wifi;
@@ -55,6 +57,11 @@ PImage img_plus;
 PImage img_minus;
 PImage img_home;
 PImage img_mostra;
+PImage img_mostra_top;
+PImage img_homebar;
+PImage img_artisti;
+PImage img_fame;
+PImage img_piero;
 
 //Bottoni
 Button btn_skip;
@@ -110,6 +117,11 @@ void setup()
   img_plus = loadImage("Assets/plus.png");
   img_minus = loadImage("Assets/minus.png");
   img_mostra = loadImage("Assets/mostra.png");
+  img_mostra_top = loadImage("Assets/mostra_top.png");
+  img_homebar = loadImage("Assets/homebar/intera.png");
+  img_artisti = loadImage("Assets/artisti.png");
+  img_piero = loadImage("Assets/piero.png");
+  img_fame = loadImage("Assets/fame.png");
 
   //Bottoni
   btn_skip = new Button(new PVector(300, 650), new PVector(30, 30), "", button_color);
@@ -135,11 +147,16 @@ void movieEvent(Movie m) {
 
 void mouseWheel(MouseEvent event) {
 
-  
+  if (firstPageActive) return;
   float e = event.getCount();
+  e *= -1;
   if (laMostraPageActive)
   {
     laMostraY = constrain(laMostraY + e*10, resY - img_mostra.height, 0);
+  } else if (pieroPageActive)
+  {
+    pieroY = constrain(pieroY + e*10, resY - img_piero.height, 0);
+    println(pieroY);
   }
   else{
     //Se la rotellina aumenta il valore (Scorre Verso Il Basso)
@@ -222,9 +239,11 @@ void DrawLowRectangle()
   rect(0, 331, width, 437);
 }
 
-Button DrawBackHomeButton(int x, int y)
+Button DrawBackHomeButton(float x, float y)
 {
-  image(img_backHome, x, y, 30, 30 );
+  // image(img_backHome, x, y, 30, 30 );
+  // fill(sidebar_color);
+  // rect(x, y, 30, 30);
   Button btn_backHomeTemp = new Button(new PVector(x, y), new PVector(30, 30), "", color(255, 255, 255, 0));
   btn_backHomeTemp.canHovered = false;
   btn_backHomeTemp.Draw();
@@ -269,7 +288,7 @@ void Sidebar()
   noStroke();
 
   rect(0, 0, width, 43);
-  rect(0, height - 44, width, 44);
+  //rect(0, height - 44, width, 44);
   fill(0);
   textAlign(CENTER, CENTER);
   textSize(17);
@@ -357,9 +376,14 @@ void FirstPage()
 void LaMostraPage()
 {
   image(img_mostra, 0, 0 + laMostraY);
-
-  btn_backHome = DrawBackHomeButton(40, 73);
-  if (btn_backHome.OnClicked())
+  image(img_mostra_top, 0, 43);
+  
+  image(img_homebar, width * 0.5 - img_homebar.width * 0.5, height - 50);
+  btn_backHome = DrawBackHomeButton(width * 0.5 - 15 , height - 42.5); 
+  Button btn_back = new Button(new PVector(width * 0.5 - img_homebar.width * 0.5 + 17.5 , height - 42.5), new PVector(30, 30) ,"", transparent_color);
+  btn_back.canHover = false;
+  btn_back.Draw();
+  if (btn_backHome.OnClicked() || btn_back.OnClicked())
   {
     laMostraPageActive = false;
     firstPageActive = true;
@@ -370,25 +394,31 @@ void LaMostraPage()
 String ArtistiPage()
 {
   arrayCount = artistList.length;
-  String title = "GLI ARTISTI";
-  DrawLowRectangle();
+  image(img_artisti, 0, 0);
 
-  DrawTextLayer(width/2, 80, title, 40, color(0, 0, 0, 255), 150, CENTER, CENTER);
-  btn_backHome = DrawBackHomeButton(40, 73);
-
-  Button btn_1 = new Button(new PVector(20, 360), new PVector(300, 100), artistList[indexMem[0]], button_color);
-  Button btn_2 = new Button(new PVector(20, 480), new PVector(300, 100), artistList[indexMem[1]], button_color);
-  Button btn_3 = new Button(new PVector(20, 600), new PVector(300, 100), artistList[indexMem[2]], button_color);
-
+  Button btn_1 = new Button(new PVector(59, 212), new PVector(245, 70.6), "", transparent_color);
+  btn_1.canHover = false;
   btn_1.Draw();
+
+  Button btn_2 = new Button(new PVector(59, 391), new PVector(245, 70.6), "", transparent_color);
+  btn_2.canHover = false;
   btn_2.Draw();
+
+  Button btn_3 = new Button(new PVector(59, 570), new PVector(245, 70.6), "", transparent_color);
+  btn_3.canHover = false;
   btn_3.Draw();
+
+  image(img_homebar, width * 0.5 - img_homebar.width * 0.5, height - 50);
+  btn_backHome = DrawBackHomeButton(width * 0.5 - 15 , height - 42.5); 
+  Button btn_back = new Button(new PVector(width * 0.5 - img_homebar.width * 0.5 + 17.5 , height - 42.5), new PVector(30, 30) ,"", transparent_color);
+  btn_back.canHover = false;
+  btn_back.Draw();
 
   TemporizationPage();
 
   if(!firstTime)
   {
-    if (btn_backHome.OnClicked())
+    if (btn_backHome.OnClicked() || btn_back.OnClicked())
     {
       artistiActive = false;
       firstPageActive = true;
@@ -400,21 +430,21 @@ String ArtistiPage()
       artistiActive = false;
       artistaInfoPageActive = true;
       firstTime = true;
-      return btn_1.title;
+      return "fame";
     }
     if (btn_2.OnClicked())
     {
       artistiActive = false;
       artistaInfoPageActive = true;
       firstTime = true;
-      return btn_2.title;
+      return "mangia";
     }
     if (btn_3.OnClicked())
     {
       artistiActive = false;
       artistaInfoPageActive = true;
       firstTime = true;
-      return btn_3.title;
+      return "gusta";
     }
   }
   return "";
@@ -422,12 +452,38 @@ String ArtistiPage()
 
 void ArtistaInfoPage()
 {
-  String text = SetupString("Artisti/"+artistSelected+".txt");
-  DrawLowRectangle();
+  TemporizationPage();
+  
+  switch (artistSelected) {
+    case "fame" :
+      image(img_fame, 0, 0);
+      Button btn_3 = new Button(new PVector(59, 570), new PVector(245, 70.6), "", transparent_color);
+      btn_3.canHover = false;
+      btn_3.Draw();
 
-  DrawTextLayer(width/2, 80, artistSelected, 40, color(0, 0, 0, 255), 150, CENTER, CENTER);
-  btn_backHome = DrawBackHomeButton(40, 73);
-  DrawTextLayer(20, 340, text, 20, color(0, 0, 0, 255), 0, LEFT, TOP);
+      if (btn_3.OnClicked())
+      {
+        artistaInfoPageActive = false;
+        pieroPageActive = true;
+        firstTime = true;
+      }
+
+    case "mangia" :
+      Button btn_1 = new Button(new PVector(59, 212), new PVector(245, 70.6), "", transparent_color);
+      btn_1.canHover = false;
+      btn_1.Draw();
+
+    case "gusta" :
+      btn_1 = new Button(new PVector(59, 212), new PVector(245, 70.6), "", transparent_color);
+      btn_1.canHover = false;
+      btn_1.Draw();
+
+    break;	
+  }
+
+  // DrawTextLayer(width/2, 80, artistSelected, 40, color(0, 0, 0, 255), 150, CENTER, CENTER);
+  // btn_backHome = DrawBackHomeButton(40, 73);
+  // DrawTextLayer(20, 340, text, 20, color(0, 0, 0, 255), 0, LEFT, TOP);
 
   if (btn_backHome.OnClicked())
   {
@@ -589,6 +645,11 @@ void BigliettoPage()
 
   image(img_barcode, 40, height - 210, width - 90, 80);
 }
+
+void PieroPage()
+{
+  image(img_piero, 0, 0 + pieroY);
+}
 //EVENTO DRAW
 void draw()
 {
@@ -623,6 +684,10 @@ void draw()
   else if (bigliettoPageActive)
   {
     BigliettoPage();
+  }
+  else if (pieroPageActive)
+  {
+    PieroPage();
   }
   
   Sidebar();

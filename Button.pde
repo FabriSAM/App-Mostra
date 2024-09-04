@@ -7,6 +7,8 @@ class Button
   color button_color;
   boolean canHovered = true;
   boolean mouseIsPressed = false;
+  boolean canHover = true;
+  
   Button(PVector position, PVector size, String title, color col)
   {
     this.position = position;
@@ -17,7 +19,7 @@ class Button
   void Draw()
   {
     noStroke();
-    if (IsHovered() && canHovered)
+    if (IsHovered() && canHovered && canHover)
     {
       fill(255, 0, 0, 255);
     } else
