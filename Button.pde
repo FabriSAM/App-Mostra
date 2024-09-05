@@ -16,6 +16,7 @@ class Button
     this.title = title;
     button_color = col;
   }
+  
   void Draw()
   {
     noStroke();

@@ -258,6 +258,7 @@ boolean GetBoolFromHash(String key)
 
   return false;
 }
+
 //Istanziare un testo da un file di Testo
 String SetupString(String path)
 {
@@ -315,6 +316,8 @@ void HomeBar(String[] editPage)
 {
   image(img_homebar, width * 0.5 - img_homebar.width * 0.5, height - 50);
 
+  println(width * 0.5 - img_homebar.width * 0.5);
+
   //Central button
   Button btn_backHome = new Button(new PVector(width * 0.5 - 15, height - 42.5), new PVector(30, 30), "", transparent_color);
   btn_backHome.canHovered = false;
@@ -328,7 +331,6 @@ void HomeBar(String[] editPage)
   {  
     if (btn_backHome.OnClicked())
     {
-      println("Home Button");
       pageList.put(editPage[1], 0);
       pageList.put("firstPageActive" , 1);
       firstTime = true;
@@ -337,7 +339,6 @@ void HomeBar(String[] editPage)
 
     if (btn_back.OnClicked())
     {
-      println("Back Button");
       pageList.put(editPage[1], 0);
       pageList.put(editPage[0], 1);
       firstTime = true;
@@ -403,7 +404,6 @@ void EndVideo()
 //Metodo Pagina 1
 void FirstPage()
 {
- 
   //DrawLowRectangle();
   image(img_home, 0, 0, resX, resY);
   
@@ -444,6 +444,7 @@ void FirstPage()
 //Metodo per visualizzare la pagina "LA MOSTRA"
 void LaMostraPage()
 {
+  TemporizationPage();
   image(img_mostra, 0, 43 + laMostraY);
   image(img_mostra_top, 0, 43);
 
@@ -455,7 +456,6 @@ void LaMostraPage()
 String ArtistiPage()
 {
   TemporizationPage();
-  arrayCount = artistList.length;
   image(img_artisti, 0, 0);
 
   Button btn_1 = new Button(new PVector(59, 212), new PVector(245, 70.6), "", transparent_color);
@@ -503,45 +503,54 @@ String ArtistiPage()
 void ArtistaInfoPage()
 {
   TemporizationPage();
-  
+  println(artistSelected);
   switch (artistSelected) {
     case "fame" :
+      println("FAME");
       image(img_fame, 0, 0);
       Button btn_3 = new Button(new PVector(59, 570), new PVector(245, 70.6), "", transparent_color);
       btn_3.canHover = false;
       btn_3.Draw();
-
-      if (btn_3.OnClicked())
+      if(!firstTime)
       {
-        pageList.put("artistaInfoPageActive", 0);
-        pageList.put("pieroPageActive", 1);
-        firstTime = true;
+        if (btn_3.OnClicked())
+        {
+          pageList.put("artistaInfoPageActive", 0);
+          pageList.put("pieroPageActive", 1);
+          firstTime = true;
+        }
       }
-
+      break;
     case "mangia" :
+      println("MANGIA");
       image(img_mangia, 0, 0);
       Button btn_1 = new Button(new PVector(59, 212), new PVector(245, 70.6), "", transparent_color);
       btn_1.canHover = false;
       btn_1.Draw();
-
-      if(btn_1.OnClicked())
+      if(!firstTime)
       {
-        pageList.put("artistaInfoPageActive", 0);
-        pageList.put("wangPageActive", 1);
+        if(btn_1.OnClicked())
+        {
+          pageList.put("artistaInfoPageActive", 0);
+          pageList.put("wangPageActive", 1);
+        }
       }
-
+      break;
     case "gusta" :
+      println("GUSTA");
       image(img_gusta, 0, 0);
       btn_1 = new Button(new PVector(59, 212), new PVector(245, 70.6), "", transparent_color);
       btn_1.canHover = false;
       btn_1.Draw();
-
-      if(btn_1.OnClicked())
-      {
-        pageList.put("artistaInfoPageActive", 0);
-        pageList.put("quevadoPageActive", 1);
+      if(!firstTime)
+      {      
+        if(btn_1.OnClicked())
+        {
+          pageList.put("artistaInfoPageActive", 0);
+          pageList.put("quevadoPageActive", 1);
+        }
       }
-    break;	
+      break;	
   }
 
   String[] editPage = {"artistiActive", "artistaInfoPageActive"};
@@ -609,6 +618,7 @@ void IntervisteInfoPage()
 
 void BigliettoPage()
 {
+  TemporizationPage();
   fill(255);
   rect(10, 60, width - 20, height - 160, 30);
   
@@ -696,6 +706,9 @@ void BigliettoPage()
   }
 
   image(img_barcode, 40, height - 210, width - 90, 80);
+
+  String[] editPage = {"firstPageActive", "bigliettoPageActive"};
+  HomeBar(editPage);
 }
 
 void PieroPage()
@@ -730,11 +743,16 @@ void QuevadoPage()
 
 void MemorPage()
 {
+  TemporizationPage();
   if (memory == null)
   {
-    memory = new Memory();    
+    memory = new Memory(0, 0, width, height - 70);    
   }  
+
   memory.Draw();
+
+  String[] editPage = {"firstPageActive", "memoryPageActive"};
+  HomeBar(editPage);
 }
 
 
@@ -785,7 +803,16 @@ void draw()
   }else if  (GetBoolFromHash("memoryPageActive"))
   {
     MemorPage();
+    return;
   }
   
   Sidebar();
+}
+
+void mousePressed()
+{
+  if(GetBoolFromHash("memoryPageActive"))
+  {
+    memory.MousePressed();
+  }
 }
