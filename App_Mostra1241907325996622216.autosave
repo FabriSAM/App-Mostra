@@ -25,8 +25,6 @@ int resY = 900;
 
 float laMostraY = 0;
 float pieroY = 0;
-float wangY = 0;
-float quevadoY = 0;
 //Stringhe
 String artistSelected = "";
 String interviewSelected = "";
@@ -43,7 +41,7 @@ boolean firstTime = true;
 HashMap<String, Integer> pageList  = new HashMap<String, Integer>();
 void InitPage()
 {
-  pageList.put("landingPageActive", 0);
+  pageList.put("landingPageActive", 1);
   pageList.put("firstPageActive", 0);
   pageList.put("laMostraPageActive", 0);
   pageList.put("artistiActive", 0);
@@ -52,9 +50,6 @@ void InitPage()
   pageList.put("intervisteInfoPageActive", 0);
   pageList.put("bigliettoPageActive", 0);
   pageList.put("pieroPageActive", 0);
-  pageList.put("wangPageActive", 0);
-  pageList.put("quevadoPageActive", 0);
-  pageList.put("memoryPageActive", 1);
 }
 
 
@@ -73,13 +68,6 @@ PImage img_homebar;
 PImage img_artisti;
 PImage img_fame;
 PImage img_piero;
-PImage img_piero_top;
-PImage img_mangia;
-PImage img_wang;
-PImage img_wang_top;
-PImage img_gusta;
-PImage img_quevado;
-PImage img_quevado_top;
 
 //Bottoni
 Button btn_skip;
@@ -96,8 +84,6 @@ Button btn_back;
 //Video
 Movie introVideo;
 Movie intervistaVideo;
-
-Memory memory;
 
 void setup()
 {
@@ -143,13 +129,6 @@ void setup()
   img_artisti = loadImage("Assets/artisti.png");
   img_piero = loadImage("Assets/piero.png");
   img_fame = loadImage("Assets/fame.png");
-  img_piero_top = loadImage("Assets/piero_top.png");
-  img_mangia = loadImage("Assets/mangia.png");
-  img_wang = loadImage("Assets/wang.png");
-  img_wang_top = loadImage("Assets/wang_top.png");
-  img_gusta = loadImage("Assets/gusta.png");
-  img_quevado = loadImage("Assets/quevado.png");
-  img_quevado_top = loadImage("Assets/quevado_top.png");
 
   //Bottoni
   btn_skip = new Button(new PVector(300, 650), new PVector(30, 30), "", button_color);
@@ -179,16 +158,10 @@ void mouseWheel(MouseEvent event) {
   e *= -1;
   if (GetBoolFromHash("laMostraPageActive"))
   {
-    laMostraY = constrain(laMostraY + e*10, resY - img_mostra.height, 43);
+    laMostraY = constrain(laMostraY + e*10, resY - img_mostra.height, 0);
   } else if (GetBoolFromHash("pieroPageActive"))
   {
-    pieroY = constrain(pieroY + e*10, resY - img_piero.height, 43);
-  }else if (GetBoolFromHash("wangPageActive"))
-  {
-    wangY = constrain(wangY + e*10, resY - img_wang.height, 43);
-  }else if (GetBoolFromHash("quevadoPageActive"))
-  {
-    quevadoY = constrain(quevadoY + e*10, resY - img_quevado.height, 43);
+    pieroY = constrain(pieroY + e*10, resY - img_piero.height, 0);
   }
   else{
     //Se la rotellina aumenta il valore (Scorre Verso Il Basso)
@@ -316,33 +289,30 @@ void HomeBar(String[] editPage)
   image(img_homebar, width * 0.5 - img_homebar.width * 0.5, height - 50);
 
   //Central button
-  Button btn_backHome = new Button(new PVector(width * 0.5 - 15, height - 42.5), new PVector(30, 30), "", transparent_color);
+  Button btn_backHome = new Button(new PVector(width * 0.5 - 15, height - 42.5), new PVector(30, 30), "", color(255, 255, 255, 0));
   btn_backHome.canHovered = false;
   btn_backHome.Draw();
 
   //Left button
-  Button btn_back = new Button(new PVector(width * 0.5 - img_homebar.width * 0.5 + 17.5 , height - 42.5), new PVector(30, 30) ,"", transparent_color);
+  Button btn_back = new Button(new PVector(width * 0.5 - img_homebar.width * 0.5 + 17.5 , height - 42.5), new PVector(30, 30) ,"", sidebar_color);
   btn_back.canHover = false;
   btn_back.Draw();
-  if(!firstTime)
-  {  
-    if (btn_backHome.OnClicked())
-    {
-      println("Home Button");
-      pageList.put(editPage[1], 0);
-      pageList.put("firstPageActive" , 1);
-      firstTime = true;
-      return;
-    }
 
-    if (btn_back.OnClicked())
-    {
-      println("Back Button");
-      pageList.put(editPage[1], 0);
-      pageList.put(editPage[0], 1);
-      firstTime = true;
-      return;
-    }
+  if (btn_backHome.OnClicked())
+  {
+    pageList.put(editPage[1], 0);
+    pageList.put("firstPageActive" ,1);
+    firstTime = true;
+    return;
+  }
+
+  if (btn_back.OnClicked())
+  {
+    println("BACK BUTTON PRESSED");
+    pageList.put(editPage[1], 0);
+    pageList.put(editPage[0], 1);
+    firstTime = true;
+    return;
   }
 }
 
@@ -415,36 +385,32 @@ void FirstPage()
   if (btn_mostra.OnClicked())
   {
     pageList.put("laMostraPageActive", 1);
-    pageList.put("firstPageActive" , 0);
-    firstTime = true;
+    pageList.put("firstPageActive" ,0);
   }
 
   if (btn_artisti.OnClicked())
   {
     pageList.put("firstPageActive" ,0);
     pageList.put("artistiActive", 1);
-    firstTime = true;
   }
   
   if (btn_interviste.OnClicked())
   {
     pageList.put("intervisteActive", 1);
-    pageList.put("firstPageActive" , 0);
-    firstTime = true;
+    pageList.put("firstPageActive" ,0);
   }
 
   if (btn_biglietti.OnClicked())
   {
-    pageList.put("firstPageActive" , 0);
+    pageList.put("firstPageActive" ,0);
     pageList.put("bigliettoPageActive", 1);
-    firstTime = true;
   }  
 }
 
 //Metodo per visualizzare la pagina "LA MOSTRA"
 void LaMostraPage()
 {
-  image(img_mostra, 0, 43 + laMostraY);
+  image(img_mostra, 0, 0 + laMostraY);
   image(img_mostra_top, 0, 43);
 
   String[] editPage = {"firstPageActive", "laMostraPageActive"};
@@ -519,32 +485,19 @@ void ArtistaInfoPage()
       }
 
     case "mangia" :
-      image(img_mangia, 0, 0);
       Button btn_1 = new Button(new PVector(59, 212), new PVector(245, 70.6), "", transparent_color);
       btn_1.canHover = false;
       btn_1.Draw();
 
-      if(btn_1.OnClicked())
-      {
-        pageList.put("artistaInfoPageActive", 0);
-        pageList.put("wangPageActive", 1);
-      }
-
     case "gusta" :
-      image(img_gusta, 0, 0);
       btn_1 = new Button(new PVector(59, 212), new PVector(245, 70.6), "", transparent_color);
       btn_1.canHover = false;
       btn_1.Draw();
 
-      if(btn_1.OnClicked())
-      {
-        pageList.put("artistaInfoPageActive", 0);
-        pageList.put("quevadoPageActive", 1);
-      }
     break;	
   }
 
-  String[] editPage = {"artistiActive", "artistaInfoPageActive"};
+  String[] editPage = {"artistaInfoPageActive", "artistiActive"};
   HomeBar(editPage);
 }
 
@@ -700,44 +653,15 @@ void BigliettoPage()
 
 void PieroPage()
 {
-  TemporizationPage();
-  image(img_piero, 0, 43 + pieroY);
-  image(img_piero_top, 0, 43);
+  image(img_piero, 0, 0 + pieroY);
+
+  image(img_homebar, width * 0.5 - img_homebar.width * 0.5, height - 50);
+
 
   String[] editPage = {"artistaInfoPageActive", "pieroPageActive"};
   HomeBar(editPage);
 
 }
-
-void WangPage()
-{
-  TemporizationPage();
-  image(img_wang, 0, 43 + wangY);
-  image(img_wang_top, 0, 43);
-
-  String[] editPage = {"artistaInfoPageActive", "wangPageActive"};
-  HomeBar(editPage);
-}
-
-void QuevadoPage()
-{
-  image(img_quevado, 0, 43 + quevadoY);
-  image(img_quevado_top, 0, 43);
-
-  String[] editPage = {"artistaInfoPageActive", "quevadoPageActive"};
-  HomeBar(editPage);
-}
-
-void MemorPage()
-{
-  if (memory == null)
-  {
-    memory = new Memory();    
-  }  
-  memory.Draw();
-}
-
-
 //EVENTO DRAW
 void draw()
 {
@@ -776,15 +700,6 @@ void draw()
   else if (GetBoolFromHash("pieroPageActive"))
   {
     PieroPage();
-  }else if (GetBoolFromHash("wangPageActive"))
-  {
-    WangPage();
-  }else if (GetBoolFromHash("quevadoPageActive"))
-  {
-    QuevadoPage();
-  }else if  (GetBoolFromHash("memoryPageActive"))
-  {
-    MemorPage();
   }
   
   Sidebar();

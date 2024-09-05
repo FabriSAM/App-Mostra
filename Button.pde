@@ -47,7 +47,6 @@ class Button
 
   boolean OnClicked()
   {
-    println(mouseIsPressed);
     if(mousePressed)
     {
       if(mouseButton == LEFT && !mouseIsPressed)
