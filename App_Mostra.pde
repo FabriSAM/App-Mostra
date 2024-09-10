@@ -1,12 +1,6 @@
 import processing.video.*;
 import java.util.Map;
 
-String[] artistList;
-String[] interviewList;
-ArrayList<Movie> interview;
-
-int[] indexMem;
-
 //Interi
 int timer = 60;
 int interviewIndex;
@@ -23,10 +17,12 @@ int firstBtnH = 50;
 int resX = 416;
 int resY = 900;
 
+//Float
 float laMostraY = 0;
 float pieroY = 0;
 float wangY = 0;
 float quevadoY = 0;
+
 //Stringhe
 String artistSelected = "";
 String interviewSelected = "";
@@ -43,7 +39,7 @@ boolean firstTime = true;
 HashMap<String, Integer> pageList  = new HashMap<String, Integer>();
 void InitPage()
 {
-  pageList.put("landingPageActive", 0);
+  pageList.put("landingPageActive", 1);
   pageList.put("firstPageActive", 0);
   pageList.put("laMostraPageActive", 0);
   pageList.put("artistiActive", 0);
@@ -54,7 +50,7 @@ void InitPage()
   pageList.put("pieroPageActive", 0);
   pageList.put("wangPageActive", 0);
   pageList.put("quevadoPageActive", 0);
-  pageList.put("memoryPageActive", 1);
+  pageList.put("memoryPageActive", 0);
 }
 
 
@@ -85,7 +81,6 @@ PImage img_quevado_top;
 Button btn_skip;
 Button btn_mostra;
 Button btn_artisti;
-Button btn_interviste;
 Button btn_biglietti;
 Button btn_backHome;
 Button btn_plus;
@@ -93,9 +88,9 @@ Button btn_minus;
 Button btn_plus2;
 Button btn_minus2;
 Button btn_back;
+
 //Video
 Movie introVideo;
-Movie intervistaVideo;
 
 Memory memory;
 
@@ -105,57 +100,41 @@ void setup()
   //fullScreen();
   background(bg_color);
   InitPage();
-  //Leggo i file di testo e creo degli Array per lavorare con gli elementi
-  artistList = loadStrings("Testi/list_artisti.txt");
-  interviewList = loadStrings("Testi/list_interview.txt");
-  
-  //Istanzio l'ArrayList di elementi
-  interview = new ArrayList<Movie>();
-  
-  //Creo e assegno i video e la lista degli attori intervistati
-  for(int i = 0; i< interviewList.length; i++)
-  {
-    String[] temp = split(interviewList[i], '=');
-    
-    interviewList[i] = temp[0];
-    Movie tempMovie = new Movie(this,  dataPath(temp[1]).replace("\\data", ""));
-    interview.add(tempMovie);
-  }
-  
-  // Istanzio L'Array di controllo per lo scorrimento
-  indexMem = new int[3];
-  indexMem[0] = 0;
-  indexMem[1] = 1;
-  indexMem[2] = 2;
-  
+
   //Immagini
-  img_home = loadImage("Assets/home.png");
-  img_wifi = loadImage("Assets/wifi.png");
-  img_battery = loadImage("Assets/battery.png");
-  img_lte = loadImage("Assets/lte.png");
-  img_backHome = loadImage("Assets/back.png");
-  img_barcode = loadImage("Assets/barcode.png");
-  img_plus = loadImage("Assets/plus.png");
-  img_minus = loadImage("Assets/minus.png");
-  img_mostra = loadImage("Assets/mostra.png");
-  img_mostra_top = loadImage("Assets/mostra_top.png");
+  //Assets/misc
+  img_wifi = loadImage("Assets/misc/wifi.png");
+  img_battery = loadImage("Assets/misc/battery.png");
+  img_lte = loadImage("Assets/misc/lte.png");
+  img_backHome = loadImage("Assets/misc/back.png");
+  img_barcode = loadImage("Assets/misc/barcode.png");
+  img_plus = loadImage("Assets/misc/plus.png");
+  img_minus = loadImage("Assets/misc/minus.png");
+
+  //Assets/homebar
   img_homebar = loadImage("Assets/homebar/intera.png");
-  img_artisti = loadImage("Assets/artisti.png");
-  img_piero = loadImage("Assets/piero.png");
-  img_fame = loadImage("Assets/fame.png");
-  img_piero_top = loadImage("Assets/piero_top.png");
-  img_mangia = loadImage("Assets/mangia.png");
-  img_wang = loadImage("Assets/wang.png");
-  img_wang_top = loadImage("Assets/wang_top.png");
-  img_gusta = loadImage("Assets/gusta.png");
-  img_quevado = loadImage("Assets/quevado.png");
-  img_quevado_top = loadImage("Assets/quevado_top.png");
+
+  //Assets/menu
+  img_home = loadImage("Assets/menu/home.png");
+  img_artisti = loadImage("Assets/menu/artisti.png");
+  img_fame = loadImage("Assets/menu/fame.png");
+  img_mangia = loadImage("Assets/menu/mangia.png");
+  img_gusta = loadImage("Assets/menu/gusta.png");
+
+  //Assets/artisti
+  img_mostra = loadImage("Assets/artisti/mostra.png");
+  img_mostra_top = loadImage("Assets/artisti/mostra_top.png");
+  img_piero = loadImage("Assets/artisti/piero.png");
+  img_piero_top = loadImage("Assets/artisti/piero_top.png");
+  img_wang = loadImage("Assets/artisti/wang.png");
+  img_wang_top = loadImage("Assets/artisti/wang_top.png");
+  img_quevado = loadImage("Assets/artisti/quevado.png");
+  img_quevado_top = loadImage("Assets/artisti/quevado_top.png");
 
   //Bottoni
   btn_skip = new Button(new PVector(300, 650), new PVector(30, 30), "", button_color);
   btn_mostra = new Button(new PVector(206, 273), new PVector(101, 60), "", transparent_color);
   btn_artisti = new Button(new PVector(120, 389), new PVector(101, 60), "", transparent_color);
-  btn_interviste = new Button(new PVector(1920,1080), new PVector(101, 60), "INTERVISTE", button_color);
   btn_biglietti = new Button(new PVector(120, 620), new PVector(101, 60), "", transparent_color);
   btn_plus = new Button(new PVector(firstBtnX + firstBtnW - 20, firstBtnY + firstBtnH/2 - 2), new PVector(10, 10), "", color(0,0,0,0));
   btn_minus = new Button(new PVector(firstBtnX + 10, firstBtnY + firstBtnH/2 - 2), new PVector(10, 10), "", color(0,0,0,0));
@@ -163,7 +142,7 @@ void setup()
   btn_minus2 = new Button(new PVector(firstBtnX + firstBtnW + 20 + 10, firstBtnY + firstBtnH/2 - 2), new PVector(10, 10), "", color(0,0,0,0));
   
   //Video di Intro
-  introVideo = new Movie(this, dataPath("Assets/first_video.mp4").replace("\\data", ""));
+  introVideo = new Movie(this, dataPath("Assets/video/intro.mp4").replace("\\data", ""));
 }
 
 //Event Methods
@@ -190,61 +169,6 @@ void mouseWheel(MouseEvent event) {
   {
     quevadoY = constrain(quevadoY + e*10, resY - img_quevado.height, 43);
   }
-  else{
-    //Se la rotellina aumenta il valore (Scorre Verso Il Basso)
-    if (e > 0) {
-      //Lista di Controlli per verificare se esce all'esterno dell'indice dell'arrai artistList
-      if (indexMem[0] + 1 >= arrayCount)
-      {
-        indexMem[0] = 0;
-      } else
-      {
-        indexMem[0] += 1;
-      }
-
-      if (indexMem[1] + 1 >= arrayCount)
-      {
-        indexMem[1] = 0;
-      } else
-      {
-        indexMem[1] += 1;
-      }
-
-      if (indexMem[2] + 1 >= arrayCount)
-      {
-        indexMem[2] = 0;
-      } else
-      {
-        indexMem[2] += 1;
-      }
-    }
-    // Se la rotellina diminuisce il valore (Scorre Verso L'Alto)
-    else {
-      //Lista di Controlli per verificare se esce all'esterno dell'indice dell'arrai artistList
-      if (indexMem[0] - 1 < 0)
-      {
-        indexMem[0] = arrayCount-1;
-      } else
-      {
-        indexMem[0] -= 1;
-      }
-      if (indexMem[1] - 1 < 0)
-      {
-        indexMem[1] = arrayCount-1;
-      } else
-      {
-        indexMem[1] -= 1;
-      }
-
-      if (indexMem[2] - 1 < 0)
-      {
-        indexMem[2] = arrayCount-1;
-      } else
-      {
-        indexMem[2] -= 1;
-      }
-    }
-  }
 }
 
 //Utility Methods
@@ -257,28 +181,6 @@ boolean GetBoolFromHash(String key)
   } 
 
   return false;
-}
-
-//Istanziare un testo da un file di Testo
-String SetupString(String path)
-{
-  String[] descript = loadStrings(path);
-  String composeText = "";
-
-  for (int i = 0; i < descript.length; i++)
-  {
-    composeText += descript[i] + "\n";
-  }
-
-  return composeText;
-}
-
-//Disegno del rettangolo inferiore
-void DrawLowRectangle()
-{
-  noStroke();
-  fill(rect_color);
-  rect(0, 331, width, 437);
 }
 
 //Metodo per scrivere un testo
@@ -393,18 +295,11 @@ void EndVideo()
     pageList.put("landingPageActive", 0);
     pageList.put("firstPageActive", 1);  
   }
-  else if (GetBoolFromHash("intervisteInfoPageActive"))
-  {
-    pageList.put("intervisteInfoPageActive", 0);
-    pageList.put("intervisteActive", 1);
-    intervistaVideo.stop();
-  }
 }
 
 //Metodo Pagina 1
 void FirstPage()
 {
-  //DrawLowRectangle();
   image(img_home, 0, 0, resX, resY);
   
   btn_mostra.Draw();
@@ -456,17 +351,17 @@ void LaMostraPage()
 String ArtistiPage()
 {
   TemporizationPage();
-  image(img_artisti, 0, 0);
+  image(img_artisti, 0, 43);
 
-  Button btn_1 = new Button(new PVector(59, 212), new PVector(245, 70.6), "", transparent_color);
+  Button btn_1 = new Button(new PVector(100, 238.61 + 43), new PVector(215, 62.42), "", transparent_color);
   btn_1.canHover = false;
   btn_1.Draw();
 
-  Button btn_2 = new Button(new PVector(59, 391), new PVector(245, 70.6), "", transparent_color);
+  Button btn_2 = new Button(new PVector(100, 392.12 + 43), new PVector(215, 62.42), "", transparent_color);
   btn_2.canHover = false;
   btn_2.Draw();
 
-  Button btn_3 = new Button(new PVector(59, 570), new PVector(245, 70.6), "", transparent_color);
+  Button btn_3 = new Button(new PVector(100, 545.12 + 43), new PVector(215, 62.42), "", transparent_color);
   btn_3.canHover = false;
   btn_3.Draw();
 
@@ -500,121 +395,6 @@ String ArtistiPage()
   return "";
 }
 
-void ArtistaInfoPage()
-{
-  TemporizationPage();
-  println(artistSelected);
-  switch (artistSelected) {
-    case "fame" :
-      println("FAME");
-      image(img_fame, 0, 0);
-      Button btn_3 = new Button(new PVector(59, 570), new PVector(245, 70.6), "", transparent_color);
-      btn_3.canHover = false;
-      btn_3.Draw();
-      if(!firstTime)
-      {
-        if (btn_3.OnClicked())
-        {
-          pageList.put("artistaInfoPageActive", 0);
-          pageList.put("pieroPageActive", 1);
-          firstTime = true;
-        }
-      }
-      break;
-    case "mangia" :
-      println("MANGIA");
-      image(img_mangia, 0, 0);
-      Button btn_1 = new Button(new PVector(59, 212), new PVector(245, 70.6), "", transparent_color);
-      btn_1.canHover = false;
-      btn_1.Draw();
-      if(!firstTime)
-      {
-        if(btn_1.OnClicked())
-        {
-          pageList.put("artistaInfoPageActive", 0);
-          pageList.put("wangPageActive", 1);
-        }
-      }
-      break;
-    case "gusta" :
-      println("GUSTA");
-      image(img_gusta, 0, 0);
-      btn_1 = new Button(new PVector(59, 212), new PVector(245, 70.6), "", transparent_color);
-      btn_1.canHover = false;
-      btn_1.Draw();
-      if(!firstTime)
-      {      
-        if(btn_1.OnClicked())
-        {
-          pageList.put("artistaInfoPageActive", 0);
-          pageList.put("quevadoPageActive", 1);
-        }
-      }
-      break;	
-  }
-
-  String[] editPage = {"artistiActive", "artistaInfoPageActive"};
-  HomeBar(editPage);
-}
-
-String IntervistePage()
-{
-  arrayCount = interviewList.length;
-  String title = "LE INTERVISTE";
-  DrawLowRectangle();
-
-  DrawTextLayer(width/2, 80, title, 40, color(0, 0, 0, 255), 150, CENTER, CENTER);
-
-  Button btn_1 = new Button(new PVector(20, 360), new PVector(300, 100), interviewList[indexMem[0]], button_color);
-  Button btn_2 = new Button(new PVector(20, 480), new PVector(300, 100), interviewList[indexMem[1]], button_color);
-  Button btn_3 = new Button(new PVector(20, 600), new PVector(300, 100), interviewList[indexMem[2]], button_color);
-
-  btn_1.Draw();
-  btn_2.Draw();
-  btn_3.Draw();
-  
-  
-  String[] editPage = {"firstPageActive", "intervisteActive"};
-  HomeBar(editPage);
-
-  TemporizationPage();
-  if(!firstTime)
-  {
-    if (btn_1.OnClicked())
-    {
-      pageList.put("intervisteActive", 0);
-      pageList.put("intervisteInfoPageActive", 1);
-      firstTime = true;
-      interviewIndex = indexMem[0];
-      return btn_1.title;
-    }
-    if (btn_2.OnClicked())
-    {
-      pageList.put("intervisteActive", 0);
-      pageList.put("intervisteInfoPageActive", 1);
-      firstTime = true;
-      interviewIndex = indexMem[1];
-      return btn_2.title;
-    }
-    if (btn_3.OnClicked())
-    {
-      pageList.put("intervisteActive", 0);
-      pageList.put("intervisteInfoPageActive", 1);
-      firstTime = true;
-      interviewIndex = indexMem[2];
-      return btn_3.title;
-    }
-  }
-  
-  return "";
-}
-
-void IntervisteInfoPage()
-{
-  intervistaVideo = interview.get(interviewIndex);
-  intervistaVideo.play();
-  image(intervistaVideo, 0, 44, width, height - 88);
-}
 
 void BigliettoPage()
 {
@@ -711,6 +491,63 @@ void BigliettoPage()
   HomeBar(editPage);
 }
 
+void ArtistaInfoPage()
+{
+  TemporizationPage();
+  println(artistSelected);
+  switch (artistSelected) {
+    case "fame" :
+      println("FAME");
+      image(img_fame, 0, 43);
+      Button btn_3 = new Button(new PVector(100, 383.72 + 43), new PVector(215, 62.42), "", transparent_color);
+      btn_3.canHover = false;
+      btn_3.Draw();
+      if(!firstTime)
+      {
+        if (btn_3.OnClicked())
+        {
+          pageList.put("artistaInfoPageActive", 0);
+          pageList.put("pieroPageActive", 1);
+          firstTime = true;
+        }
+      }
+      break;
+    case "mangia" :
+      println("MANGIA");
+      image(img_mangia, 0, 43);
+      Button btn_1 = new Button(new PVector(100, 203.54 + 43), new PVector(215, 62.42), "", transparent_color);
+      btn_1.canHover = false;
+      btn_1.Draw();
+      if(!firstTime)
+      {
+        if(btn_1.OnClicked())
+        {
+          pageList.put("artistaInfoPageActive", 0);
+          pageList.put("wangPageActive", 1);
+        }
+      }
+      break;
+    case "gusta" :
+      println("GUSTA");
+      image(img_gusta, 0, 43);
+      btn_1 = new Button(new PVector(100, 203.54 + 43), new PVector(215, 62.42), "", transparent_color);
+      btn_1.canHover = false;
+      btn_1.Draw();
+      if(!firstTime)
+      {      
+        if(btn_1.OnClicked())
+        {
+          pageList.put("artistaInfoPageActive", 0);
+          pageList.put("quevadoPageActive", 1);
+        }
+      }
+      break;	
+  }
+
+  String[] editPage = {"artistiActive", "artistaInfoPageActive"};
+  HomeBar(editPage);
+}
+
 void PieroPage()
 {
   TemporizationPage();
@@ -755,7 +592,6 @@ void MemorPage()
   HomeBar(editPage);
 }
 
-
 //EVENTO DRAW
 void draw()
 {
@@ -779,13 +615,6 @@ void draw()
   } else if (GetBoolFromHash("artistaInfoPageActive"))
   {
     ArtistaInfoPage();
-  } else if (GetBoolFromHash("intervisteActive"))
-  {
-    interviewSelected = IntervistePage();
-  }
-  else if (GetBoolFromHash("intervisteInfoPageActive"))
-  {
-    IntervisteInfoPage();
   }
   else if (GetBoolFromHash("bigliettoPageActive"))
   {
