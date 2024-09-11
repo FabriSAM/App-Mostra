@@ -44,7 +44,6 @@ void InitPage()
   pageList.put("laMostraPageActive", 0);
   pageList.put("artistiActive", 0);
   pageList.put("artistaInfoPageActive", 0);
-  pageList.put("intervisteActive", 0);
   pageList.put("intervisteInfoPageActive", 0);
   pageList.put("bigliettoPageActive", 0);
   pageList.put("pieroPageActive", 0);
@@ -52,7 +51,6 @@ void InitPage()
   pageList.put("quevadoPageActive", 0);
   pageList.put("memoryPageActive", 0);
 }
-
 
 // Immagini
 PImage img_wifi;
@@ -304,7 +302,6 @@ void FirstPage()
   
   btn_mostra.Draw();
   btn_artisti.Draw();
-  btn_interviste.Draw();
   btn_biglietti.Draw();
   
   if (btn_mostra.OnClicked())
@@ -318,13 +315,6 @@ void FirstPage()
   {
     pageList.put("firstPageActive" ,0);
     pageList.put("artistiActive", 1);
-    firstTime = true;
-  }
-  
-  if (btn_interviste.OnClicked())
-  {
-    pageList.put("intervisteActive", 1);
-    pageList.put("firstPageActive" , 0);
     firstTime = true;
   }
 

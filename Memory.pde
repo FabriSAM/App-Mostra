@@ -4,6 +4,7 @@ class Memory
   int cols = 2;         // Numero di colonne
   int totalCards = rows * cols;
   PImage[] images = new PImage[totalCards]; // Array per tutte le immagini (ogni carta avrà la sua immagine unica)
+  PImage flipCard;
   int[] cards = new int[totalCards];        // Array che tiene traccia delle coppie di carte
   boolean[] flipped = new boolean[totalCards]; // Stato delle carte girate
   int cardWidth, cardHeight;
@@ -35,6 +36,8 @@ class Memory
       images[i] = loadImage("Assets/memory/img_" + i + ".png");
     }
     
+    //flipCard = loadImage("Assets/memory/flipcard.png");
+
     // Inizializziamo l'array delle carte
     for (int i = 0; i < totalCards; i++) {
       cards[i] = i; // Ogni carta ha un indice unico che corrisponde all'immagine
@@ -63,6 +66,9 @@ class Memory
       } else {
         fill(100);
         rect(x, y, cardWidth, cardHeight);
+        imageMode(CENTER);  // Usato solo qui per disegnare le immagini centrali
+        //image(flipCard, x + cardWidth / 2, y + cardHeight / 2, cardWidth - 10, cardHeight - 10);
+        imageMode(CORNER);  // Ripristina la modalità predefinita subito dopo
       }
     }
     
