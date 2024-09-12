@@ -1,3 +1,0 @@
-Isobella D'Aragona=Assets/intro.mov
-Bazzanzio=Assets/intro2.mp4
-Gabriello=Assets/intro.mov

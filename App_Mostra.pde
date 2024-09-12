@@ -74,12 +74,9 @@ PImage img_wang_top;
 PImage img_gusta;
 PImage img_quevado;
 PImage img_quevado_top;
+PImage img_skip_btn;
 
 //Bottoni
-Button btn_skip;
-Button btn_mostra;
-Button btn_artisti;
-Button btn_biglietti;
 Button btn_backHome;
 Button btn_plus;
 Button btn_minus;
@@ -108,6 +105,7 @@ void setup()
   img_barcode = loadImage("Assets/misc/barcode.png");
   img_plus = loadImage("Assets/misc/plus.png");
   img_minus = loadImage("Assets/misc/minus.png");
+  img_skip_btn = loadImage("Assets/misc/skip.png");
 
   //Assets/homebar
   img_homebar = loadImage("Assets/homebar/intera.png");
@@ -130,10 +128,6 @@ void setup()
   img_quevado_top = loadImage("Assets/artisti/quevado_top.png");
 
   //Bottoni
-  btn_skip = new Button(new PVector(300, 650), new PVector(30, 30), "", button_color);
-  btn_mostra = new Button(new PVector(206, 273), new PVector(101, 60), "", transparent_color);
-  btn_artisti = new Button(new PVector(120, 389), new PVector(101, 60), "", transparent_color);
-  btn_biglietti = new Button(new PVector(120, 620), new PVector(101, 60), "", transparent_color);
   btn_plus = new Button(new PVector(firstBtnX + firstBtnW - 20, firstBtnY + firstBtnH/2 - 2), new PVector(10, 10), "", color(0,0,0,0));
   btn_minus = new Button(new PVector(firstBtnX + 10, firstBtnY + firstBtnH/2 - 2), new PVector(10, 10), "", color(0,0,0,0));
   btn_plus2 = new Button(new PVector(firstBtnX + firstBtnW + 20 + firstBtnW - 20, firstBtnY + firstBtnH/2 - 2), new PVector(10, 10), "", color(0,0,0,0));
@@ -273,7 +267,12 @@ void LandingPage()
 {
   introVideo.play();
   image(introVideo, 0, 44, width, height - 88);
+  image(img_skip_btn, width-img_skip_btn.width, 750);
+
+  Button btn_skip = new Button(new PVector(width-img_skip_btn.width, 750), new PVector(30, 30), "", sidebar_color);
+  btn_skip.canHover = false;
   btn_skip.Draw();
+
   if (introVideo.time() >= introVideo.duration()-0.05)
   {
     EndVideo();
@@ -300,8 +299,19 @@ void FirstPage()
 {
   image(img_home, 0, 0, resX, resY);
   
+  Button btn_mostra = new Button(new PVector(width - 110.6 - 105.39, 287.69), new PVector(105.39, 62.54), "", sidebar_color);
+  Button btn_artisti = new Button(new PVector(108.75, 412.41), new PVector(105.39, 62.54), "", sidebar_color);
+  Button btn_memory = new Button(new PVector(width - 110.6 - 105.39, 532.21), new PVector(105.39, 62.54), "", sidebar_color);
+  Button btn_biglietti = new Button(new PVector(108.75, 656.33), new PVector(105.39, 62.54), "", sidebar_color);
+
+  btn_mostra.canHover = false;
+  btn_artisti.canHover = false;
+  btn_memory.canHover = false;
+  btn_biglietti.canHover = false;
+
   btn_mostra.Draw();
   btn_artisti.Draw();
+  btn_memory.Draw();
   btn_biglietti.Draw();
   
   if (btn_mostra.OnClicked())
@@ -315,6 +325,13 @@ void FirstPage()
   {
     pageList.put("firstPageActive" ,0);
     pageList.put("artistiActive", 1);
+    firstTime = true;
+  }
+
+  if (btn_memory.OnClicked())
+  {
+    pageList.put("firstPageActive" ,0);
+    pageList.put("memoryPageActive", 1);
     firstTime = true;
   }
 

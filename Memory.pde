@@ -36,7 +36,7 @@ class Memory
       images[i] = loadImage("Assets/memory/img_" + i + ".png");
     }
     
-    //flipCard = loadImage("Assets/memory/flipcard.png");
+    flipCard = loadImage("Assets/misc/retro.png");
 
     // Inizializziamo l'array delle carte
     for (int i = 0; i < totalCards; i++) {
@@ -67,7 +67,7 @@ class Memory
         fill(100);
         rect(x, y, cardWidth, cardHeight);
         imageMode(CENTER);  // Usato solo qui per disegnare le immagini centrali
-        //image(flipCard, x + cardWidth / 2, y + cardHeight / 2, cardWidth - 10, cardHeight - 10);
+        image(flipCard, x + cardWidth / 2, y + cardHeight / 2, cardWidth - 10, cardHeight - 10);
         imageMode(CORNER);  // Ripristina la modalità predefinita subito dopo
       }
     }
