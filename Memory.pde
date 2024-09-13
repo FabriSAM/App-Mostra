@@ -21,7 +21,6 @@ class Memory
 
   Memory(int x, int y, int w, int h)
   {
-    println("StartMemory");
     gridX = x;
     gridY = y;
     gridWidth = w;
@@ -48,7 +47,6 @@ class Memory
   }
 
   void Draw() {
-    println("Draw Memory");
     background(255);
     
     // Disegniamo le carte all'interno del riquadro

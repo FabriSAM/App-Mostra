@@ -38,6 +38,7 @@ class Button
 
   boolean IsHovered()
   {
+    // Il mouse è all'interno del bottone
     if (mouseX > position.x && mouseX < position.x + size.x && mouseY > position.y && mouseY < position.y + size.y)
     {
       return true;
